@@ -29,7 +29,13 @@ public class Camouflage {
             messageId = parameters.getString(PreyConfig.MESSAGE_ID);
         } catch (Exception e) {
         }
-        PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, UtilJson.makeMapParam("start", "camouflage", "started",null));
+        String jobId = null;
+        try {
+            jobId = parameters.getString(PreyConfig.JOB_ID);
+            PreyLogger.d("jobId:"+jobId);
+        } catch (Exception e) {
+        }
+        PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, null, UtilJson.makeMapParam("start", "camouflage", "started",null), jobId);
         PreyConfig.getPreyConfig(ctx).setCamouflageSet(true);
 
         ComponentName componentToDisabled = new ComponentName("com.prey", "com.prey.activities.LoginActivity");
@@ -46,9 +52,14 @@ public class Camouflage {
             messageId = parameters.getString(PreyConfig.MESSAGE_ID);
         } catch (Exception e) {
         }
-        PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, UtilJson.makeMapParam("stop", "camouflage", "stopped",null));
+        String jobId = null;
+        try {
+            jobId = parameters.getString(PreyConfig.JOB_ID);
+            PreyLogger.d("jobId:"+jobId);
+        } catch (Exception e) {
+        }
+        PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, null, UtilJson.makeMapParam("stop", "camouflage", "stopped",null), jobId);
         PreyConfig.getPreyConfig(ctx).setCamouflageSet(false);
-
         ComponentName componentToEnabled = new ComponentName("com.prey", "com.prey.activities.LoginActivity");
         PackageManager pm = ctx.getApplicationContext().getPackageManager();
         pm.setComponentEnabledSetting(componentToEnabled, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);

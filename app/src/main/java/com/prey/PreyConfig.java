@@ -146,9 +146,9 @@ public class PreyConfig {
 
     public static final String LAST_EVENT_GEO = "LAST_EVENT_GEO";
 
-    public static final String MESSAGE_ID="messageID";
+    public static final String MESSAGE_ID = "messageID";
 
-
+    public static final String JOB_ID = "device_job_id";
 
     private boolean securityPrivilegesAlreadyPrompted;
 

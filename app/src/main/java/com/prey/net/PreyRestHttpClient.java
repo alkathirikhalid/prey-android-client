@@ -97,6 +97,13 @@ public class PreyRestHttpClient {
         return response;
     }
 
+    public PreyHttpResponse postAutenticationCorrelationJobId(String url, String status, String correlation,Map<String, String> params,String jobId) throws Exception {
+        PreyLogger.d("Sending using 'POST' - URI: " + url + " - parameters: " + params.toString());
+        PreyHttpResponse response=UtilConnection.connectionPostAuthorizationCorrelationJobId(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED,status,correlation,jobId);
+        PreyLogger.d("Response from server: " + (response==null?"":response.toString()));
+        return response;
+    }
+
     public PreyHttpResponse get(String url, Map<String, String> params) throws Exception {
         PreyHttpResponse response=UtilConnection.connectionGet(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED);
 

@@ -108,21 +108,28 @@ public class UtilConnection {
     public static final PreyHttpResponse connectionPostAuthorizationCorrelationId(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType,String status,String correlationId) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_POST,contentType,getAuthorization(preyConfig),status,null,correlationId);
     }
-
+    public static final PreyHttpResponse connectionPostAuthorizationCorrelationJobId(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType,String status,String correlationId,String jobId) throws Exception {
+        return connection(preyConfig,uri,params,REQUEST_METHOD_POST,contentType,getAuthorization(preyConfig),status,null,correlationId,jobId);
+    }
     public static final PreyHttpResponse connection(PreyConfig preyConfig,String uri, Map<String, String> params,String requestMethod,String contentType,String authorization,String status,List<EntityFile> entityFiles,String correlationId) throws Exception {
+        return connection( preyConfig, uri, params, requestMethod, contentType, authorization, status, entityFiles, correlationId,null);
+    }
+    public static final PreyHttpResponse connection(PreyConfig preyConfig,String uri, Map<String, String> params, String requestMethod, String contentType, String authorization, String status,List<EntityFile> entityFiles, String correlationId, String jobsId) throws Exception {
         PreyHttpResponse response=null;
         URL url = new URL(uri);
         HttpURLConnection connection=null;
         int retry = 0;
         boolean delay=false;
-        //PreyLogger.d("uri:"+uri);
+        /*
+        PreyLogger.d("uri:"+uri);
         if(params!=null){
             Iterator<String> ite=params.keySet().iterator();
             while (ite.hasNext()){
                 String key=ite.next();
-                PreyLogger.i("["+key+"]:"+params.get(key));
+                PreyLogger.d("["+key+"]:"+params.get(key));
             }
         }
+        */
         SimpleMultipartEntity multiple=new SimpleMultipartEntity();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmZ");
         List <ByteArrayOutputStream> listOutputStream = new ArrayList<>();
@@ -149,6 +156,10 @@ public class UtilConnection {
                 if (status!=null) {
                     connection.addRequestProperty("X-Prey-Status", status);
                     //PreyLogger.i("X-Prey-Status:"+status);
+                }
+                if (jobsId!=null) {
+                    connection.addRequestProperty("X-Prey-Jobs-ID", jobsId);
+                    PreyLogger.i("X-Prey-Jobs-ID:"+jobsId);
                 }
 
                 if (correlationId!=null) {

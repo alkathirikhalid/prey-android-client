@@ -22,11 +22,13 @@ public class AlertThread extends Thread {
     private Context ctx;
     private String description;
     private String messageId;
+    private String jobId;
 
-    public AlertThread(Context ctx, String description, String messageId) {
+    public AlertThread(Context ctx, String description, String messageId, String jobId) {
         this.ctx = ctx;
         this.description = description;
         this.messageId = messageId;
+        this.jobId=jobId;
     }
 
     public void run() {
@@ -46,7 +48,7 @@ public class AlertThread extends Thread {
 
             PreyConfig.getPreyConfig(ctx).setNextAlert(true);
 
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, "processed",messageId,UtilJson.makeMapParam("start", "alert", "started",null));
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, "processed", messageId, UtilJson.makeMapParam("start", "alert", "started",null), jobId);
             try {
                 int i = 0;
                 while (!PreyStatus.getInstance().isPreyPopUpOnclick() && i < 10) {
@@ -55,12 +57,12 @@ public class AlertThread extends Thread {
                 }
             } catch (InterruptedException e) {
             }
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, UtilJson.makeMapParam("start", "alert", "stopped",null));
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, null, UtilJson.makeMapParam("start", "alert", "stopped",null), jobId);
             PreyConfig.getPreyConfig(ctx).setLastEvent("alert_started");
             PreyLogger.d("stopped alert");
         } catch (Exception e) {
             PreyLogger.e("failed alert: " + e.getMessage(), e);
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, messageId, UtilJson.makeMapParam("start", "alert", "failed", e.getMessage()));
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, messageId, UtilJson.makeMapParam("start", "alert", "failed", e.getMessage()), jobId);
         }
     }
 

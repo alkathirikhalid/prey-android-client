@@ -580,15 +580,20 @@ public class PreyWebServices {
     }
 
     public String sendNotifyActionResultPreyHttp(Context ctx, String correlationId, Map<String, String> params) {
-        return sendNotifyActionResultPreyHttp(ctx,null,correlationId,params);
+        return sendNotifyActionResultPreyHttp(ctx,null,correlationId,params,null);
     }
-    public String sendNotifyActionResultPreyHttp(Context ctx, String status,String correlationId, Map<String, String> params) {
+
+    public String sendNotifyActionResultPreyHttp(Context ctx, String correlationId, Map<String, String> params,String jobId) {
+        return sendNotifyActionResultPreyHttp(ctx,null,correlationId,params,jobId);
+    }
+
+    public String sendNotifyActionResultPreyHttp(Context ctx, String status, String correlationId, Map<String, String> params, String jobId) {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
         String response = null;
         try {
             String url = getResponseUrlJson(ctx);
             PreyConfig.postUrl = null;
-            PreyHttpResponse httpResponse = PreyRestHttpClient.getInstance(ctx).postAutenticationCorrelationId(url, status,correlationId,params);
+            PreyHttpResponse httpResponse = PreyRestHttpClient.getInstance(ctx).postAutenticationCorrelationJobId(url, status,correlationId,params,jobId);
             response = httpResponse.toString();
             PreyLogger.d("Notify Action Result sent: " + response);
         } catch (Exception e) {

@@ -25,9 +25,20 @@ public class Ping extends JsonAction {
     @Override
     public List<HttpDataService> get(Context ctx, List<ActionResult> list, JSONObject parameters) {
         try{
-            String messageId=parameters.getString(PreyConfig.MESSAGE_ID);
+            String messageId = null;
+            try {
+                messageId = parameters.getString(PreyConfig.MESSAGE_ID);
+                PreyLogger.d("messageId:"+messageId);
+            } catch (Exception e) {
+            }
+            String jobId = null;
+            try {
+                jobId = parameters.getString(PreyConfig.JOB_ID);
+                PreyLogger.d("jobId:"+jobId);
+            } catch (Exception e) {
+            }
             Map<String,String> map=UtilJson.makeMapParam("start","ping","started",null);
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx,"processed",messageId,map);
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx,"processed",messageId,map,jobId);
             PreyLogger.i("messageId:"+messageId);
         }catch (Exception e){
             PreyLogger.i("error ping:"+e.getMessage());
