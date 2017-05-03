@@ -43,6 +43,13 @@ public class Lock extends JsonAction {
                 PreyLogger.d("messageId:"+messageId);
             } catch (Exception e) {
             }
+            String reason=null;
+            try {
+                String jobId = parameters.getString(PreyConfig.JOB_ID);
+                PreyLogger.d("jobId:"+jobId);
+                reason="{\"device_job_id\":"+jobId+"}";
+            } catch (Exception e) {
+            }
             String unlock = null;
             try {
                 unlock = parameters.getString(PreyConfig.UNLOCK_PASS);
@@ -53,9 +60,9 @@ public class Lock extends JsonAction {
                 Intent intent = new Intent(ctx, PreyLockService.class);
                 ctx.startService(intent);
             }else{
-                lock(ctx, unlock, messageId);
+                lock(ctx, unlock, messageId,reason);
             }
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, "processed", messageId, UtilJson.makeMapParam("start", "lock", "started", null));
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, "processed", messageId, UtilJson.makeMapParam("start", "lock", "started", reason));
         } catch (Exception e) {
             PreyLogger.e("Error:" + e.getMessage() + e.getMessage(), e);
             PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, UtilJson.makeMapParam("start", "lock", "failed", e.getMessage()));
@@ -70,6 +77,15 @@ public class Lock extends JsonAction {
                 PreyLogger.d("messageId:"+messageId);
             } catch (Exception e) {
             }
+            String reason = null;
+            try {
+                String jobId = parameters.getString(PreyConfig.JOB_ID);
+                PreyLogger.d("jobId:"+jobId);
+                if(jobId!=null&&!"".equals(jobId)){
+                    reason="{\"device_job_id\":"+jobId+"}";
+                }
+            } catch (Exception e) {
+            }
             if(PreyConfig.getPreyConfig(ctx).isMarshmallowOrAbove() && PreyPermission.canDrawOverlays(ctx)) {
                 PreyConfig.getPreyConfig(ctx).deleteUnlockPass();
                 Intent intent = new Intent(ctx, PreyLockService.class);
@@ -82,7 +98,7 @@ public class Lock extends JsonAction {
                 screenLock.acquire();
                 screenLock.release();
             }
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, UtilJson.makeMapParam("stop", "lock", "stopped",null));
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, UtilJson.makeMapParam("stop", "lock", "stopped",reason));
             PreyConfig.getPreyConfig(ctx).setLastEvent("lock_stopped");
         } catch (Exception e) {
             PreyLogger.e("Error:" + e.getMessage() + e.getMessage(), e);
@@ -98,7 +114,7 @@ public class Lock extends JsonAction {
                 Intent intent = new Intent(ctx, PreyLockService.class);
                 ctx.startService(intent);
             }else{
-                lock(ctx, unlock, null);
+                lock(ctx, unlock, null,null);
             }
         } catch (Exception e) {
             PreyLogger.i("Error:" + e.getMessage());
@@ -106,11 +122,11 @@ public class Lock extends JsonAction {
         }
     }
 
-    public void lock(Context ctx, String unlock,String messageId) throws PreyException{
+    public void lock(Context ctx, String unlock,String messageId,String reason) throws PreyException{
         if (PreyConfig.getPreyConfig(ctx).isFroyoOrAbove()) {
             PreyConfig.getPreyConfig(ctx).setLock(true);
             FroyoSupport.getInstance(ctx).changePasswordAndLock(unlock, true);
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, "processed",messageId, UtilJson.makeMapParam("start", "lock", "started",null));
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, "processed",messageId, UtilJson.makeMapParam("start", "lock", "started",reason));
             PreyConfig.getPreyConfig(ctx).setLastEvent("lock_started");
         }
     }
