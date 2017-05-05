@@ -49,7 +49,7 @@ public class AlertThread extends Thread {
             PreyConfig.getPreyConfig(ctx).setNextAlert(true);
             String reason=null;
             if(jobId!=null&&!"".equals(jobId)){
-                reason="{\"device_job_id\":"+jobId+"}";
+                reason="{\"device_job_id\":\""+jobId+"\"}";
             }
             PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, "processed",messageId,UtilJson.makeMapParam("start", "alert", "started",reason));
             try {

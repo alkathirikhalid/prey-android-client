@@ -47,7 +47,7 @@ public class Lock extends JsonAction {
             try {
                 String jobId = parameters.getString(PreyConfig.JOB_ID);
                 PreyLogger.d("jobId:"+jobId);
-                reason="{\"device_job_id\":"+jobId+"}";
+                reason="{\"device_job_id\":\""+jobId+"\"}";
             } catch (Exception e) {
             }
             String unlock = null;
@@ -82,7 +82,7 @@ public class Lock extends JsonAction {
                 String jobId = parameters.getString(PreyConfig.JOB_ID);
                 PreyLogger.d("jobId:"+jobId);
                 if(jobId!=null&&!"".equals(jobId)){
-                    reason="{\"device_job_id\":"+jobId+"}";
+                    reason="{\"device_job_id\":\""+jobId+"\"}";
                 }
             } catch (Exception e) {
             }

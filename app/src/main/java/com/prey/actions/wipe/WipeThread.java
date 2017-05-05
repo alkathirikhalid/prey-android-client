@@ -33,7 +33,7 @@ public class WipeThread extends Thread {
     public void run() {
         String reason=null;
         if(jobId!=null&&!"".equals(jobId)){
-            reason="{\"device_job_id\":"+jobId+"}";
+            reason="{\"device_job_id\":\""+jobId+"\"}";
         }
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
         PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, UtilJson.makeMapParam("start","wipe","started",reason));

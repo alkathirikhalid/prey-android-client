@@ -34,7 +34,7 @@ public class Camouflage {
             String jobId = parameters.getString(PreyConfig.JOB_ID);
             PreyLogger.d("jobId:"+jobId);
             if(jobId!=null&&!"".equals(jobId)){
-                reason="{\"device_job_id\":"+jobId+"}";
+                reason="{\"device_job_id\":\""+jobId+"\"}";
             }
         } catch (Exception e) {
         }
@@ -60,7 +60,7 @@ public class Camouflage {
             String jobId = parameters.getString(PreyConfig.JOB_ID);
             PreyLogger.d("jobId:"+jobId);
             if(jobId!=null&&!"".equals(jobId)){
-                reason="{\"device_job_id\":"+jobId+"}";
+                reason="{\"device_job_id\":\""+jobId+"\"}";
             }
         } catch (Exception e) {
         }

@@ -115,6 +115,7 @@ public class JSONParser {
 
         //	json = "[ {\"command\": \"start\",\"target\": \"detach\",\"options\": {}}]";
 
+       // json = "[ {\"command\": \"start\",\"target\": \"alert\",\"options\": {\"alert_message\":\"This device is stolen property. Please contact testforkhq@gmail.com to arrange its safe return.\",\"device_job_id\":\"1daaa5\"}}]";
 
         if ("[]".equals(json)) {
             return null;

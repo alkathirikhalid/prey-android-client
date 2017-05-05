@@ -37,7 +37,7 @@ public class AlarmThread extends Thread {
         boolean start = false;
         String reason=null;
         if(jobId!=null&&!"".equals(jobId)){
-            reason="{\"device_job_id\":"+jobId+"}";
+            reason="{\"device_job_id\":\""+jobId+"\"}";
         }
         try {
 
