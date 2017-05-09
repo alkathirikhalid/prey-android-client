@@ -83,7 +83,7 @@ public class AlarmThread extends Thread {
                 mp.release();
         }
         if (start) {
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, UtilJson.makeMapParam("start", "alarm", "stopped",reason));
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx,"processed", messageId, UtilJson.makeMapParam("stop", "alarm", "stopped",reason));
         }
         PreyLogger.d("stopped alarm");
     }

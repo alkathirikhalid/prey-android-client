@@ -60,7 +60,7 @@ public class AlertThread extends Thread {
                 }
             } catch (InterruptedException e) {
             }
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, UtilJson.makeMapParam("start", "alert", "stopped",reason));
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, "processed",messageId,UtilJson.makeMapParam("stop", "alert", "stopped",reason));
             PreyConfig.getPreyConfig(ctx).setLastEvent("alert_started");
             PreyLogger.d("stopped alert");
         } catch (Exception e) {
