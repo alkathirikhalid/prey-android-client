@@ -80,7 +80,9 @@
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:supportsRtl = "true"
-        android:theme="@style/Theme.AppCompat" >
+        android:theme="@style/Theme.AppCompat"
+        android:backupAgent=".backup.PreyBackupAgentHelper"
+        >
 
         <meta-data android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -376,6 +378,9 @@
         <service android:name="com.prey.actions.fileretrieval.FileretrievalService" />
         <service android:name="com.prey.services.PreyLockService" />
         <service android:name="com.prey.services.PreyOverlayService" />
+
+        <meta-data android:name="com.google.android.backup.api_key" android:value="AEdPqrEAAAAIRDYokfZ3zcNdXU9fWmeA8-sYKlZhr8LhzkMTBw" />
+
     </application>
 
 </manifest>
