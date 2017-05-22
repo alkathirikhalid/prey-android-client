@@ -183,112 +183,122 @@ public class CheckPasswordActivity extends AppCompatActivity implements Activity
 
         boolean showLocation=false;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            boolean canAccessFineLocation=PreyPermission.canAccessFineLocation(this);
-            boolean canAccessCoarseLocation=PreyPermission.canAccessCoarseLocation(this);
-            boolean canAccessCamera=PreyPermission.canAccessCamera(this);
-            boolean canAccessReadPhoneState=PreyPermission.canAccessReadPhoneState(this);
-            boolean canAccessReadExternalStorage=PreyPermission.canAccessReadExternalStorage(this);
 
-            boolean canDrawOverlays=PreyPermission.canDrawOverlays(this);
+        if(!PreyConfig.getPreyConfig(this).getProtectReady()) {
+            String message = getString(R.string.new_account_congratulations_text, "");
+            Bundle bundle = new Bundle();
+            bundle.putString("message", message);
+            Intent intent = new Intent(this, PermissionInformationActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            finish();
+        }else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                boolean canAccessFineLocation = PreyPermission.canAccessFineLocation(this);
+                boolean canAccessCoarseLocation = PreyPermission.canAccessCoarseLocation(this);
+                boolean canAccessCamera = PreyPermission.canAccessCamera(this);
+                boolean canAccessReadPhoneState = PreyPermission.canAccessReadPhoneState(this);
+                boolean canAccessReadExternalStorage = PreyPermission.canAccessReadExternalStorage(this);
 
-            if(!canAccessFineLocation||!canAccessCoarseLocation||!canAccessCamera
-                    || !canAccessReadPhoneState|| !canAccessReadExternalStorage){
+                boolean canDrawOverlays = PreyPermission.canDrawOverlays(this);
 
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                final FrameLayout frameView = new FrameLayout(this);
-                builder.setView(frameView);
-
-                final AlertDialog alertDialog = builder.create();
-                LayoutInflater inflater = alertDialog.getLayoutInflater();
-                View dialoglayout = inflater.inflate(R.layout.warning, frameView);
-
-                TextView warning_title=(TextView)dialoglayout.findViewById(R.id.warning_title);
-                TextView warning_body=(TextView)dialoglayout.findViewById(R.id.warning_body);
-
-                warning_title.setTypeface(magdacleanmonoRegular);
-                warning_body.setTypeface(titilliumWebBold);
+                if (!canAccessFineLocation || !canAccessCoarseLocation || !canAccessCamera
+                        || !canAccessReadPhoneState || !canAccessReadExternalStorage) {
 
 
-                Button button_ok = (Button) dialoglayout.findViewById(R.id.button_ok);
-                Button button_close = (Button) dialoglayout.findViewById(R.id.button_close);
-                button_ok.setTypeface(titilliumWebBold);
-                button_close.setTypeface(titilliumWebBold);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                final Activity thisActivity=this;
-                button_ok.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        PreyLogger.d("askForPermission");
-                        askForPermission();
-                        alertDialog.dismiss();
+                    final FrameLayout frameView = new FrameLayout(this);
+                    builder.setView(frameView);
 
-                    }
-                });
+                    final AlertDialog alertDialog = builder.create();
+                    LayoutInflater inflater = alertDialog.getLayoutInflater();
+                    View dialoglayout = inflater.inflate(R.layout.warning, frameView);
 
-                button_close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        PreyLogger.d("close ask");
+                    TextView warning_title = (TextView) dialoglayout.findViewById(R.id.warning_title);
+                    TextView warning_body = (TextView) dialoglayout.findViewById(R.id.warning_body);
 
-                        alertDialog.dismiss();
-                    }
-                });
+                    warning_title.setTypeface(magdacleanmonoRegular);
+                    warning_body.setTypeface(titilliumWebBold);
 
 
+                    Button button_ok = (Button) dialoglayout.findViewById(R.id.button_ok);
+                    Button button_close = (Button) dialoglayout.findViewById(R.id.button_close);
+                    button_ok.setTypeface(titilliumWebBold);
+                    button_close.setTypeface(titilliumWebBold);
 
-                alertDialog.show();
-                showLocation=false;
+                    final Activity thisActivity = this;
+                    button_ok.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            PreyLogger.d("askForPermission");
+                            askForPermission();
+                            alertDialog.dismiss();
 
-            }else{
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (!canDrawOverlays) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        }
+                    });
 
-                        final FrameLayout frameView = new FrameLayout(this);
-                        builder.setView(frameView);
+                    button_close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            PreyLogger.d("close ask");
 
-                        final AlertDialog alertDialog = builder.create();
-                        LayoutInflater inflater = alertDialog.getLayoutInflater();
-                        View dialoglayout = inflater.inflate(R.layout.warning_android7, frameView);
+                            alertDialog.dismiss();
+                        }
+                    });
 
-                        Button button_android7_ok = (Button) dialoglayout.findViewById(R.id.button_android7_ok);
-                        Button button_android7_close = (Button) dialoglayout.findViewById(R.id.button_android7_close);
 
-                        button_android7_ok.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                PreyLogger.d("askForPermissionAndroid7");
-                                askForPermissionAndroid7();
-                                startOverlayService();
-                                alertDialog.dismiss();
-                                finish();
+                    alertDialog.show();
+                    showLocation = false;
 
-                            }
-                        });
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (!canDrawOverlays) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                        button_android7_close.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertDialog.dismiss();
-                            }
-                        });
+                            final FrameLayout frameView = new FrameLayout(this);
+                            builder.setView(frameView);
 
-                        alertDialog.show();
-                        showLocation = false;
+                            final AlertDialog alertDialog = builder.create();
+                            LayoutInflater inflater = alertDialog.getLayoutInflater();
+                            View dialoglayout = inflater.inflate(R.layout.warning_android7, frameView);
+
+                            Button button_android7_ok = (Button) dialoglayout.findViewById(R.id.button_android7_ok);
+                            Button button_android7_close = (Button) dialoglayout.findViewById(R.id.button_android7_close);
+
+                            button_android7_ok.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    PreyLogger.d("askForPermissionAndroid7");
+                                    askForPermissionAndroid7();
+                                    startOverlayService();
+                                    alertDialog.dismiss();
+                                    finish();
+
+                                }
+                            });
+
+                            button_android7_close.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    alertDialog.dismiss();
+                                }
+                            });
+
+                            alertDialog.show();
+                            showLocation = false;
+                        } else {
+                            showLocation = true;
+                        }
                     } else {
                         showLocation = true;
                     }
-                } else {
-                    showLocation = true;
                 }
+
+
+            } else {
+                showLocation = true;
             }
-
-
-        }else{
-            showLocation=true;
         }
         if(showLocation) {
             LocationManager mlocManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -334,6 +344,7 @@ public class CheckPasswordActivity extends AppCompatActivity implements Activity
                 builder.create().show();
             }
         }
+
 
         PreyConfig.getPreyConfig(this).registerC2dm();
     }

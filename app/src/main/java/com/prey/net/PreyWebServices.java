@@ -415,6 +415,10 @@ public class PreyWebServices {
         return getDeviceUrlApiv2(ctx).concat("/response");
     }
 
+    public String getInfoUrlJson(Context ctx) throws PreyException {
+        return getDeviceUrlApiv2(ctx).concat("/info.json");
+    }
+
     private String getDeviceUrlApiv2(Context ctx) throws PreyException {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
         String deviceKey = preyConfig.getDeviceId();
@@ -901,6 +905,21 @@ public class PreyWebServices {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public String getUuidDevice(Context ctx){
+        String uuid = null;
+        try {
+            String uri = getInfoUrlJson(ctx);
+            PreyHttpResponse response = PreyRestHttpClient.getInstance(ctx).getAutentication(uri, null);
+            String out=response.getResponseAsString();
+            //String out="{\"name\":\"LGE Nexus 5X\",\"key\":\"184457\",\"type\":\"Phone\",\"description\":\"LGE Nexus 5X\",\"missing\":false,\"unreachable\":false,\"location\":{\"lat\":\"-33.4372217\",\"accuracy\":\"500.0\",\"method\":\"native\",\"lng\":\"-70.6593676\",\"created_at\":\"2017-05-18T20:17:14+00:00\"},\"unread_report\":0,\"state\":\"ok\",\"connection_status_desc\":\"Ready\",\"device_status_info\":{\"logged_user\":null,\"battery_status\":null,\"active_access_point\":{}},\"client_outdated\":false,\"last_checked_in\":\"2017-05-18T20:45:10+00:00\",\"last_checked_in_from_now\":88.075586493,\"os\":\"Android\",\"os_version\":\"7.1.2\",\"client_version\":\"1.7.2\",\"client_version_parts\":{\"major\":1,\"minor\":7,\"patch\":2,\"pre\":null,\"build\":null},\"icon\":\"android-phone\",\"reports_count\":0,\"delay\":25,\"byods_account_ids\":[],\"user_email\":\"oaliaga@gmail.com\",\"account_id\":2,\"user_id\":40,\"created_at\":\"2017-05-18T20:15:06.000Z\",\"updated_at\":\"2017-05-18T20:17:14.000Z\",\"serial_number\":\"353627079318682\",\"uuid\":\"353627079318682\",\"bios_vendor\":\"LGE\",\"bios_version\":\"\",\"ram_size\":1814,\"ram_modules\":null,\"cpu_model\":\"AArch64 Processor rev 3 (aarch64)\",\"cpu_speed\":1440,\"cpu_cores\":6,\"mb_version\":null,\"mac_addresses_list_values\":[],\"label_ids\":[],\"label_names\":[]}";
+            JSONObject jsnobject = new JSONObject(out);
+            uuid = jsnobject.getString("uuid");
+        } catch (Exception e) {
+        }
+
+        return uuid;
     }
 
 }

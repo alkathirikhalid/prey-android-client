@@ -249,6 +249,11 @@ public class UtilConnection {
                     case HttpURLConnection.HTTP_UNAVAILABLE:
                         PreyLogger.d(uri + "**unavailable**");
                         break;
+                    case HttpURLConnection.HTTP_NOT_ACCEPTABLE:
+                        PreyLogger.d(uri + " **NOT_ACCEPTABLE**");
+                        response = convertPreyHttpResponse(responseCode,connection);
+                        retry = RETRIES;
+                        break;
                     default:
                         PreyLogger.d(uri + " **unknown response code**.");
                         break;
@@ -263,64 +268,64 @@ public class UtilConnection {
         }catch(Exception e){
             PreyLogger.i("error util:"+e.getMessage());
         }
-        if(response==null||(response!=null&& !(response.getStatusCode()==200||response.getStatusCode()==201))) {
+        if(response==null||(response!=null&& !(response.getStatusCode()==200||response.getStatusCode()==201||response.getStatusCode()==406))) {
             OfflineDatasource datasource = new OfflineDatasource(preyConfig.getContext());
             if(response!=null) {
                 PreyLogger.i("code:" + response.getStatusCode());
             }
             PreyLogger.i("uri:"+uri+" status:"+status);
-            OfflineDto offline=new OfflineDto();
-            offline.setOfflineId(sdf.format(new Date()));
-            offline.setUrl(uri);
-            offline.setContentType(contentType);
-            offline.setAuthorization(authorization);
-            offline.setStatus(status);
-            offline.setCorrelationId(correlationId);
+            if(uri!=null && uri.indexOf("devices.json")<0){
+                OfflineDto offline = new OfflineDto();
+                offline.setOfflineId(sdf.format(new Date()));
+                offline.setUrl(uri);
+                offline.setContentType(contentType);
+                offline.setAuthorization(authorization);
+                offline.setStatus(status);
+                offline.setCorrelationId(correlationId);
 
 
-            offline.setParameters(params.toString());
-            offline.setRequestMethod(requestMethod);
+                offline.setParameters(params.toString());
+                offline.setRequestMethod(requestMethod);
 
 
-
-            if (entityFiles != null && entityFiles.size() > 0) {
-                JSONArray array=new JSONArray();
-                for (int i = 0; entityFiles != null && i < entityFiles.size(); i++) {
-                    EntityFile entityFile = entityFiles.get(i);
-
-
-                    JSONObject json=new JSONObject();
-                    json.put("idFile",entityFile.getIdFile());
-                    json.put("type",entityFile.getType());
-                    json.put("name",entityFile.getName());
-                    json.put("mimeType",entityFile.getMimeType());
-                    json.put("length",entityFile.getLength());
+                if (entityFiles != null && entityFiles.size() > 0) {
+                    JSONArray array = new JSONArray();
+                    for (int i = 0; entityFiles != null && i < entityFiles.size(); i++) {
+                        EntityFile entityFile = entityFiles.get(i);
 
 
+                        JSONObject json = new JSONObject();
+                        json.put("idFile", entityFile.getIdFile());
+                        json.put("type", entityFile.getType());
+                        json.put("name", entityFile.getName());
+                        json.put("mimeType", entityFile.getMimeType());
+                        json.put("length", entityFile.getLength());
 
-                    ByteArrayOutputStream outputStream=listOutputStream.get(i);
-                    PreyLogger.i("idFile:"+entityFile.getIdFile()+" json:"+json.toString());
-                    array.put(json);
+
+                        ByteArrayOutputStream outputStream = listOutputStream.get(i);
+                        PreyLogger.i("idFile:" + entityFile.getIdFile() + " json:" + json.toString());
+                        array.put(json);
 
 
-                    saveFile(entityFile.getIdFile(),outputStream);
+                        saveFile(entityFile.getIdFile(), outputStream);
 
+                    }
+                    PreyLogger.i("files:" + array.toString());
+                    offline.setFiles(array.toString());
+                    offline.setOfflineId(sdf.format(new Date()) + "_report");
                 }
-                PreyLogger.i("files:"+array.toString());
-                offline.setFiles(array.toString());
-                offline.setOfflineId(sdf.format(new Date())+"_report");
+
+                PreyLogger.i("id:" + offline.getOfflineId() + " url:" + offline.getUrl());
+                PreyLogger.i("id:" + offline.getOfflineId() + " requestMethod:" + requestMethod);
+                PreyLogger.i("id:" + offline.getOfflineId() + " contentType:" + contentType);
+                PreyLogger.i("id:" + offline.getOfflineId() + " authorization:" + authorization);
+                PreyLogger.i("id:" + offline.getOfflineId() + " status:" + status);
+                PreyLogger.i("id:" + offline.getOfflineId() + " correlationId:" + correlationId);
+                PreyLogger.i("id:" + offline.getOfflineId() + " files:" + offline.getFiles());
+
+
+                datasource.createOffline(offline);
             }
-
-            PreyLogger.i("id:"+offline.getOfflineId()+" url:"+offline.getUrl());
-            PreyLogger.i("id:"+offline.getOfflineId()+" requestMethod:" + requestMethod);
-            PreyLogger.i("id:"+offline.getOfflineId()+" contentType:" + contentType);
-            PreyLogger.i("id:"+offline.getOfflineId()+" authorization:" + authorization);
-            PreyLogger.i("id:"+offline.getOfflineId()+" status:" + status);
-            PreyLogger.i("id:"+offline.getOfflineId()+" correlationId:" + correlationId);
-            PreyLogger.i("id:"+offline.getOfflineId()+" files:" + offline.getFiles());
-
-
-            datasource.createOffline(offline);
         }
         return response;
     }

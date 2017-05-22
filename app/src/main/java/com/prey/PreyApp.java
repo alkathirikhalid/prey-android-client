@@ -16,11 +16,13 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.app.NotificationCompat;
 
+import com.prey.actions.alert.AlertThread;
 import com.prey.actions.fileretrieval.FileretrievalController;
 import com.prey.actions.fileretrieval.FileretrievalService;
 import com.prey.actions.geofences.GeofenceController;
 import com.prey.actions.report.ReportScheduled;
 import com.prey.activities.LoginActivity;
+import com.prey.backup.PreyBackupThread;
 import com.prey.net.PreyWebServices;
 import com.prey.net.offline.OfflineController;
 
@@ -107,6 +109,8 @@ public class PreyApp extends Application {
                     mNotificationManager.notify(STATUS_ICON_REQUEST_CODE, notif);
 
                 }
+
+                new PreyBackupThread(this).start();
             }
         } catch (Exception e) {
             PreyLogger.e("Error PreyApp:" + e.getMessage(), e);
