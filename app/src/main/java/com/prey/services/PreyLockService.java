@@ -59,7 +59,7 @@ public class PreyLockService extends Service{
             view = inflater.inflate(R.layout.lock_android7, null);
 
             Typeface regularMedium = Typeface.createFromAsset(getAssets(), "fonts/Regular/regular-medium.ttf");
-            TextView textView1 = (TextView) view.findViewById(R.id.TextView_Lock_AccessDenied);
+            final TextView textView1 = (TextView) view.findViewById(R.id.TextView_Lock_AccessDenied);
             textView1.setTypeface(regularMedium);
             Typeface regularBold = Typeface.createFromAsset(getAssets(), "fonts/Regular/regular-bold.ttf");
             EditText editText1 = (EditText) view.findViewById(R.id.EditText_Lock_Password);
@@ -73,6 +73,7 @@ public class PreyLockService extends Service{
                 public void onClick(View v) {
                     try {
                         String key = editText.getText().toString();
+                        PreyLogger.i("key:"+key+" unlock:"+unlock);
                         if (unlock.equals(key)) {
                             PreyConfig.getPreyConfig(ctx).deleteUnlockPass();
                             if (view != null) {
@@ -85,8 +86,11 @@ public class PreyLockService extends Service{
                                     }
                                 }.start();
                             }
+                            PreyConfig.getPreyConfig(ctx).deleteUnlockPass();
+                            stopSelf();
                         } else {
                             editText.setText("");
+                            textView1.setText("["+unlock+"]");
                         }
                     } catch (Exception e) {
                     }

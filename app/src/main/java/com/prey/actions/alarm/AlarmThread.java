@@ -22,18 +22,25 @@ public class AlarmThread extends Thread {
     private Context ctx;
     private String sound;
     private String messageId;
+    private String jobId;
 
-    public AlarmThread(Context ctx, String sound,String messageId) {
+    public AlarmThread(Context ctx, String sound, String messageId, String jobId) {
         this.ctx = ctx;
         this.sound = sound;
         this.messageId=messageId;
+        this.jobId=jobId;
     }
 
     public void run() {
         PreyLogger.d("started alarm");
         MediaPlayer mp = null;
         boolean start = false;
+        String reason=null;
+        if(jobId!=null&&!"".equals(jobId)){
+            reason="{\"device_job_id\":\""+jobId+"\"}";
+        }
         try {
+
             PreyStatus.getInstance().setAlarmStart();
             final AudioManager audio = (AudioManager) ctx.getSystemService(Context.AUDIO_SERVICE);
             int max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
@@ -52,7 +59,7 @@ public class AlarmThread extends Thread {
             mp.start();
             Mp3OnCompletionListener mp3Listener = new Mp3OnCompletionListener();
             mp.setOnCompletionListener(mp3Listener);
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx,"processed", messageId, UtilJson.makeMapParam("start", "alarm", "started",null));
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx,"processed", messageId, UtilJson.makeMapParam("start", "alarm", "started",reason));
             start = true;
             int i = 0;
             while (PreyStatus.getInstance().isAlarmStart() && i < 80) {
@@ -76,7 +83,7 @@ public class AlarmThread extends Thread {
                 mp.release();
         }
         if (start) {
-            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, UtilJson.makeMapParam("start", "alarm", "stopped",null));
+            PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx,"processed", messageId, UtilJson.makeMapParam("stop", "alarm", "stopped",reason));
         }
         PreyLogger.d("stopped alarm");
     }

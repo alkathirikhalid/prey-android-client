@@ -130,7 +130,7 @@ public class PreyConfig {
     public static final String DEVICE_ID = "DEVICE_ID";
 
     public static final String SIM_SERIAL_NUMBER = "SIM_SERIAL_NUMBER";
-    public static final String VERSION_PREY_DEFAULT="1.7.4";
+    public static final String VERSION_PREY_DEFAULT="1.7.5";
 
     public static final String CAN_ACCESS_FINE_LOCATION = "CAN_ACCESS_FINE_LOCATION";
     public static final String CAN_ACCESS_COARSE_LOCATION = "CAN_ACCESS_COARSE_LOCATION";
@@ -147,6 +147,8 @@ public class PreyConfig {
     public static final String LAST_EVENT_GEO = "LAST_EVENT_GEO";
 
     public static final String MESSAGE_ID="messageID";
+
+    public static final String JOB_ID="device_job_id";
 
     public static final String UNLOCK_PASS="unlock_pass";
 
