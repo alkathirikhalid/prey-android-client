@@ -378,6 +378,7 @@
         <service android:name="com.prey.actions.fileretrieval.FileretrievalService" />
         <service android:name="com.prey.services.PreyLockService" />
         <service android:name="com.prey.services.PreyOverlayService" />
-    </application>
+        <service android:name="com.prey.services.PreyArpService" />
+    </application>" />
 
 </manifest>

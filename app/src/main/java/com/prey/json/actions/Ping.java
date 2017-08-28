@@ -36,7 +36,7 @@ public class Ping extends JsonAction {
             } catch (Exception e) {
             }
 
-            Map<String,String> map=UtilJson.makeMapParam("start","ping","started",reason);
+            Map<String,Object> map=UtilJson.makeMapParam("start","ping","started",reason);
             PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx,"processed",messageId,map);
             PreyLogger.i("messageId:"+messageId);
         }catch (Exception e){

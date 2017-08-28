@@ -105,12 +105,12 @@ public class LocationUtil {
     }
 
     private static void sendNotify(Context ctx, String message) {
-        Map<String, String> parms = UtilJson.makeMapParam("get", "location", "failed", message);
+        Map<String, Object> parms = UtilJson.makeMapParam("get", "location", "failed", message);
         PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, parms);
     }
 
     private static void sendNotify(Context ctx, String message, String status) {
-        Map<String, String> parms = UtilJson.makeMapParam("get", "location", status, message);
+        Map<String, Object> parms = UtilJson.makeMapParam("get", "location", status, message);
         PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, parms);
     }
 

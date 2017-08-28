@@ -70,7 +70,7 @@ public class PreyWebServices {
     public PreyAccountData registerNewAccount(Context ctx, String name, String email, String password, String deviceType) throws PreyException {
 
 
-        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
 
         parameters.put("name", name);
         parameters.put("email", email);
@@ -151,7 +151,7 @@ public class PreyWebServices {
             vendor = AboveCupcakeSupport.getDeviceVendor();
         }catch(Exception e){
         }
-        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("api_key", api_key);
         parameters.put("title", vendor + " " + model);
         parameters.put("device_type", deviceType);
@@ -198,7 +198,7 @@ public class PreyWebServices {
     public PreyAccountData registerNewDeviceToAccount(Context ctx, String email, String password, String deviceType) throws PreyException {
         PreyLogger.d("ws email:" + email + " password:" + password);
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
-        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
         PreyHttpResponse response = null;
         String xml;
         try {
@@ -298,7 +298,7 @@ public class PreyWebServices {
 
     public String checkPassword(String apikey, String password, Context ctx) throws PreyException {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
-        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
         String xml=null;
 
         try {
@@ -333,7 +333,7 @@ public class PreyWebServices {
 
     public String deleteDevice(Context ctx) throws PreyException {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
-        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
         String xml;
         try {
             String url = this.getDeviceWebControlPanelUiUrl(ctx);
@@ -351,7 +351,7 @@ public class PreyWebServices {
     public boolean forgotPassword(Context ctx) throws PreyException {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
         String URL = PreyConfig.getPreyConfig(ctx).getPreyUrl().concat("forgot");
-        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
 
         parameters.put("user[email]", preyConfig.getEmail());
 
@@ -450,7 +450,7 @@ public class PreyWebServices {
     }
 
 
-    public HashMap<String, String> increaseData(Context ctx, HashMap<String, String> parameters) {
+    public HashMap<String, Object> increaseData(Context ctx, HashMap<String, Object> parameters) {
         PreyPhone phone = new PreyPhone(ctx);
         Hardware hardware = phone.getHardware();
         String prefix = "hardware_attributes";
@@ -486,7 +486,7 @@ public class PreyWebServices {
 
     public PreyHttpResponse sendPreyHttpData(Context ctx, ArrayList<HttpDataService> dataToSend) {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, Object> parameters = new HashMap<String, Object>();
         List<EntityFile> entityFiles = new ArrayList<EntityFile>();
         for (HttpDataService httpDataService : dataToSend) {
             if (httpDataService != null) {
@@ -541,7 +541,7 @@ public class PreyWebServices {
     public void sendPreyHttpEvent(Context ctx, Event event, JSONObject jsonObject) {
         try {
             String url = getEventsUrlJson(ctx);
-            Map<String, String> parameters = new HashMap<String, String>();
+            Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put("name", event.getName());
             parameters.put("info", event.getInfo());
 
@@ -568,7 +568,7 @@ public class PreyWebServices {
 
 
 
-    public String sendNotifyActionResultPreyHttp(Context ctx, Map<String, String> params) {
+    public String sendNotifyActionResultPreyHttp(Context ctx, Map<String, Object> params) {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
         String response = null;
         try {
@@ -583,10 +583,10 @@ public class PreyWebServices {
         return response;
     }
 
-    public String sendNotifyActionResultPreyHttp(Context ctx, String correlationId, Map<String, String> params) {
+    public String sendNotifyActionResultPreyHttp(Context ctx, String correlationId, Map<String, Object> params) {
         return sendNotifyActionResultPreyHttp(ctx,null,correlationId,params);
     }
-    public String sendNotifyActionResultPreyHttp(Context ctx, String status,String correlationId, Map<String, String> params) {
+    public String sendNotifyActionResultPreyHttp(Context ctx, String status,String correlationId, Map<String, Object> params) {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
         String response = null;
         try {
@@ -604,7 +604,7 @@ public class PreyWebServices {
     public PreyHttpResponse sendPreyHttpReport(Context ctx, List<HttpDataService> dataToSend) {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
 
-        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
         List<EntityFile> entityFiles = new ArrayList<EntityFile>();
         for (HttpDataService httpDataService : dataToSend) {
             if (httpDataService != null) {
@@ -641,7 +641,7 @@ public class PreyWebServices {
         return lista;
     }
 
-    public PreyHttpResponse sendContact(Context ctx, HashMap<String, String> parameters) {
+    public PreyHttpResponse sendContact(Context ctx, HashMap<String, Object> parameters) {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
 
 
@@ -662,7 +662,7 @@ public class PreyWebServices {
         return preyHttpResponse;
     }
 
-    public PreyHttpResponse sendBrowser(Context ctx, HashMap<String, String> parameters) {
+    public PreyHttpResponse sendBrowser(Context ctx, HashMap<String, Object> parameters) {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
         PreyHttpResponse preyHttpResponse = null;
         try {
@@ -682,7 +682,7 @@ public class PreyWebServices {
         PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
         PreyHttpResponse preyHttpResponse = null;
         try {
-            HashMap<String, String> parameters = new HashMap<String, String>();
+            HashMap<String, Object> parameters = new HashMap<String, Object>();
             String url = getDeviceUrlApiv2(ctx).concat("/contacts.json");
             PreyLogger.d("url:" + url);
             preyHttpResponse = PreyRestHttpClient.getInstance(ctx).getAutentication(url, parameters);
@@ -707,7 +707,7 @@ public class PreyWebServices {
         String sb=null;
         PreyRestHttpClient preyRestHttpClient=PreyRestHttpClient.getInstance(ctx);
         try{
-            Map<String, String> params=null;
+            Map<String, Object> params=null;
             PreyHttpResponse response=PreyRestHttpClient.getInstance(ctx).getAutentication(url, params);
             sb=response.getResponseAsString();
             if (sb!=null)
@@ -837,4 +837,9 @@ public class PreyWebServices {
         return uuid;
     }
 
+    public PreyHttpResponse lostMacs(Context ctx,String url,HashMap<String, Object> parameters) throws Exception{
+
+        PreyHttpResponse response=PreyRestHttpClient.getInstance(ctx).postAutentication(url, parameters);
+        return response;
+    }
 }

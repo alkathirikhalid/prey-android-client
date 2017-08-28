@@ -75,41 +75,41 @@ public class UtilConnection {
         return "Basic " + getCredentials(user, pass);
     }
 
-    public static final PreyHttpResponse connectionPut(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType) throws Exception {
+    public static final PreyHttpResponse connectionPut(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_PUT,contentType,null,null,null,null);
     }
-    public static final PreyHttpResponse connectionGet(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType) throws Exception {
+    public static final PreyHttpResponse connectionGet(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_GET,contentType,null,null,null,null);
     }
-    public static final PreyHttpResponse connectionGetAuthorization(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType) throws Exception {
+    public static final PreyHttpResponse connectionGetAuthorization(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_GET,contentType,getAuthorization(preyConfig),null,null,null);
     }
-    public static final PreyHttpResponse connectionGetAuthorization(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType,String user,String pass) throws Exception {
+    public static final PreyHttpResponse connectionGetAuthorization(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType,String user,String pass) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_GET,null, getAuthorization(user, pass),null,null,null);
     }
-    public static final PreyHttpResponse connectionDelete(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType) throws Exception {
+    public static final PreyHttpResponse connectionDelete(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_DELETE,contentType,null,null,null,null);
     }
-    public static final PreyHttpResponse connectionDeleteAuthorization(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType) throws Exception {
+    public static final PreyHttpResponse connectionDeleteAuthorization(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_DELETE,contentType,getAuthorization(preyConfig),null,null,null);
     }
-    public static final PreyHttpResponse connectionPost(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType) throws Exception {
+    public static final PreyHttpResponse connectionPost(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_POST,contentType,null,null,null,null);
     }
-    public static final PreyHttpResponse connectionPostAuthorization(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType) throws Exception {
+    public static final PreyHttpResponse connectionPostAuthorization(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_POST,contentType,getAuthorization(preyConfig),null,null,null);
     }
-    public static final PreyHttpResponse connectionPostAuthorization(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType,List<EntityFile> entityFiles) throws Exception {
+    public static final PreyHttpResponse connectionPostAuthorization(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType,List<EntityFile> entityFiles) throws Exception {
         return connection(preyConfig, uri, params, REQUEST_METHOD_POST, contentType,getAuthorization(preyConfig), null,entityFiles,null);
     }
-    public static final PreyHttpResponse connectionPostAuthorizationStatus(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType,String status) throws Exception {
+    public static final PreyHttpResponse connectionPostAuthorizationStatus(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType,String status) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_POST,contentType,getAuthorization(preyConfig),status,null,null);
     }
-    public static final PreyHttpResponse connectionPostAuthorizationCorrelationId(PreyConfig preyConfig,String uri, Map<String, String> params, String contentType,String status,String correlationId) throws Exception {
+    public static final PreyHttpResponse connectionPostAuthorizationCorrelationId(PreyConfig preyConfig,String uri, Map<String, Object> params, String contentType,String status,String correlationId) throws Exception {
         return connection(preyConfig,uri,params,REQUEST_METHOD_POST,contentType,getAuthorization(preyConfig),status,null,correlationId);
     }
 
-    public static final PreyHttpResponse connection(PreyConfig preyConfig,String uri, Map<String, String> params,String requestMethod,String contentType,String authorization,String status,List<EntityFile> entityFiles,String correlationId) throws Exception {
+    public static final PreyHttpResponse connection(PreyConfig preyConfig,String uri, Map<String, Object> params,String requestMethod,String contentType,String authorization,String status,List<EntityFile> entityFiles,String correlationId) throws Exception {
         PreyHttpResponse response=null;
         URL url = new URL(uri);
         HttpURLConnection connection=null;
@@ -170,17 +170,30 @@ public class UtilConnection {
                     dos.writeBytes(getPostDataString(params));
                 }
                 if( entityFiles!=null&&entityFiles.size()>0 ) {
-                    for(Map.Entry<String, String> entry : params.entrySet()){
+                    for(Map.Entry<String, Object> entry : params.entrySet()){
                         String key=  entry.getKey();
                         String value=null;
                         try{
-                            value=  entry.getValue() ;
+                            Object o=  entry.getValue() ;
+                            if(o instanceof String) {
+                                value=(String)o;
+                                if(value==null){
+                                    value="";
+                                }
+                                multiple.addPart(key,value);
+                            }else {
+                                List<String>list =(List<String>)o;
+                                for (int i=0;list!=null&&i<list.size();i++){
+                                    value=(String)list.get(0);
+                                    if(value==null){
+                                        value="";
+                                    }
+                                    multiple.addPart(key,value);
+                                }
+                            }
                         }catch(Exception e){
                         }
-                        if(value==null){
-                            value="";
-                        }
-                        multiple.addPart(key,value);
+
                     }
                     for(int i=0;entityFiles!=null&&i<entityFiles.size();i++) {
                         EntityFile entityFile = entityFiles.get(i);
@@ -265,7 +278,7 @@ public class UtilConnection {
                 delay = true;
             } while (retry < RETRIES);
         }catch(Exception e){
-            PreyLogger.d("error util:"+e.getMessage());
+            PreyLogger.e("error util:"+e.getMessage(),e);
         }
         /*
         if(response==null||(response!=null&& !(response.getStatusCode()==200||response.getStatusCode()==201||response.getStatusCode()==404||response.getStatusCode()==406||response.getStatusCode()==409||response.getStatusCode()==502))) {
@@ -453,23 +466,43 @@ public class UtilConnection {
         return connection;
     }
 
-    private static String getPostDataString(Map<String, String> params) throws UnsupportedEncodingException{
+    private static String getPostDataString(Map<String, Object> params) throws UnsupportedEncodingException{
         StringBuilder result = new StringBuilder();
         boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet()){
+        for(Map.Entry<String, Object> entry : params.entrySet()){
 
-            if (first)
-                first = false;
-            else
-                result.append("&");
-            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-            result.append("=");
+
             try {
-                result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+                Object o=entry.getValue();
+                if(o instanceof String) {
+                    if (first)
+                        first = false;
+                    else
+                        result.append("&");
+                    result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+                    result.append("=");
+                    result.append(URLEncoder.encode((String)o, "UTF-8"));
+                }else {
+                    List<String>list =(List<String>)o;
+                    for (int i=0;list!=null&&i<list.size();i++){
+                        String key=entry.getKey();
+                        String value=(String)list.get(i);
+                        if (first)
+                            first = false;
+                        else
+                            result.append("&");
+                        result.append(URLEncoder.encode(key, "UTF-8"));
+                        PreyLogger.i("_______"+key);
+                        result.append("=");
+                        result.append(URLEncoder.encode((String)value, "UTF-8"));
+                        PreyLogger.i("_______"+value);
+                    }
+                }
             }catch (Exception e){
                 result.append(URLEncoder.encode("", "UTF-8"));
             }
         }
+        PreyLogger.i("getPostDataString:"+result.toString());
         return result.toString();
     }
 

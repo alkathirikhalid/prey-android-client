@@ -45,15 +45,15 @@ public class PreyRestHttpClient {
 
     private static final String CONTENT_TYPE_URL_ENCODED="application/x-www-form-urlencoded";
 
-    public PreyHttpResponse post(String url, Map<String, String> params) throws Exception {
-        PreyLogger.d("Sending using 'POST' - URI: " + url + " - parameters: " + params.toString());
+    public PreyHttpResponse post(String url, Map<String, Object> params) throws Exception {
+        PreyLogger.d("Sending using 'POST' - URI: " + url  );
         PreyHttpResponse response=UtilConnection.connectionPost(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED);
 
         PreyLogger.d("Response from server: " + (response==null?"":response.toString()));
         return response;
     }
 
-    public PreyHttpResponse postAutentication(String url, Map<String, String> params) throws Exception {
+    public PreyHttpResponse postAutentication(String url, Map<String, Object> params) throws Exception {
         PreyLogger.d("Sending using 'POST' - URI: " + url + " - parameters: " + params.toString());
         PreyHttpResponse response=UtilConnection.connectionPostAuthorization(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED);
 
@@ -61,7 +61,7 @@ public class PreyRestHttpClient {
         return response;
     }
 
-    public PreyHttpResponse postAutentication(String url, Map<String, String> params, List<EntityFile> entityFiles) throws Exception {
+    public PreyHttpResponse postAutentication(String url, Map<String, Object> params, List<EntityFile> entityFiles) throws Exception {
         PreyLogger.d("Sending using 'POST' - URI: " + url + " - parameters: " + params.toString());
         String contentType=CONTENT_TYPE_URL_ENCODED;
         if(entityFiles!=null&&entityFiles.size()>0)
@@ -74,7 +74,7 @@ public class PreyRestHttpClient {
 
 
 
-    public PreyHttpResponse postAutenticationTimeout(String url, Map<String, String> params) throws Exception {
+    public PreyHttpResponse postAutenticationTimeout(String url, Map<String, Object> params) throws Exception {
         PreyLogger.d("Sending using 'POST' - URI: " + url + " - parameters: " + params.toString());
         PreyHttpResponse response=UtilConnection.connectionPostAuthorization(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED);
 
@@ -83,49 +83,49 @@ public class PreyRestHttpClient {
     }
 
 
-    public PreyHttpResponse postStatusAutentication(String url, String status, Map<String, String> params) throws Exception {
+    public PreyHttpResponse postStatusAutentication(String url, String status, Map<String, Object> params) throws Exception {
         PreyLogger.d("Sending using 'POST' - URI: " + url + " - parameters: " + params.toString());
         PreyHttpResponse response=UtilConnection.connectionPostAuthorizationStatus(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED,status);
         PreyLogger.d("Response from server: " + (response==null?"":response.toString()));
         return response;
     }
 
-    public PreyHttpResponse postAutenticationCorrelationId(String url, String status, String correlation,Map<String, String> params) throws Exception {
+    public PreyHttpResponse postAutenticationCorrelationId(String url, String status, String correlation,Map<String, Object> params) throws Exception {
         PreyLogger.d("Sending using 'POST' - URI: " + url + " - parameters: " + params.toString());
         PreyHttpResponse response=UtilConnection.connectionPostAuthorizationCorrelationId(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED,status,correlation);
         PreyLogger.d("Response from server: " + (response==null?"":response.toString()));
         return response;
     }
 
-    public PreyHttpResponse get(String url, Map<String, String> params) throws Exception {
+    public PreyHttpResponse get(String url, Map<String, Object> params) throws Exception {
         PreyHttpResponse response=UtilConnection.connectionGet(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED);
 
         PreyLogger.d("Response from server: " + (response==null?"":response.toString()));
         return response;
     }
 
-    public PreyHttpResponse getAutentication(String url, Map<String, String> params) throws Exception {
+    public PreyHttpResponse getAutentication(String url, Map<String, Object> params) throws Exception {
         PreyHttpResponse response=UtilConnection.connectionGetAuthorization(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED);
 
         PreyLogger.d("Response from server: " + (response==null?"":response.toString()));
         return response;
     }
 
-    public PreyHttpResponse get(String url, Map<String, String> params, String user, String pass) throws Exception {
+    public PreyHttpResponse get(String url, Map<String, Object> params, String user, String pass) throws Exception {
         PreyHttpResponse response=UtilConnection.connectionGetAuthorization(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED,user,pass);
 
         PreyLogger.d("Response from server: " + (response==null?"":response.toString()));
         return response;
     }
 
-    public PreyHttpResponse get(String url, Map<String, String> params, String user, String pass,String content) throws Exception {
+    public PreyHttpResponse get(String url, Map<String, Object> params, String user, String pass,String content) throws Exception {
         PreyHttpResponse response=UtilConnection.connectionGetAuthorization(PreyConfig.getPreyConfig(ctx),url,params,content,user,pass);
 
         PreyLogger.d("Response from server: " + (response==null?"":response.toString()));
         return response;
     }
 
-    public PreyHttpResponse delete(String url, Map<String, String> params) throws Exception {
+    public PreyHttpResponse delete(String url, Map<String, Object> params) throws Exception {
         PreyHttpResponse response=UtilConnection.connectionDeleteAuthorization(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED);
 
         PreyLogger.d("Response from server: " + (response==null?"":response.toString()));
@@ -176,7 +176,7 @@ public class PreyRestHttpClient {
     }
 
 
-    public PreyHttpResponse connectionPostAuthorizationCorrelationId(String url, String status, Map<String, String> params,String correlationId) throws Exception {
+    public PreyHttpResponse connectionPostAuthorizationCorrelationId(String url, String status, Map<String, Object> params,String correlationId) throws Exception {
         PreyLogger.d("Sending using 'POST' - URI: " + url + " - parameters: " + params.toString()+" status:"+status+" correlationId:"+correlationId);
         PreyHttpResponse response=UtilConnection.connectionPostAuthorizationCorrelationId(PreyConfig.getPreyConfig(ctx),url,params,CONTENT_TYPE_URL_ENCODED,status,correlationId);
 

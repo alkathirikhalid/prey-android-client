@@ -34,16 +34,16 @@ public class UtilJson {
         return json;
     }
 
-    public static  Map<String, String> makeMapParam(String command,String target,String status){
-        Map<String, String> map=new HashMap<String, String>();
+    public static  Map<String, Object> makeMapParam(String command,String target,String status){
+        Map<String, Object> map=new HashMap<String, Object>();
         map.put("command", command);
         map.put("target", target);
         map.put("status", status);
         return map;
     }
 
-    public static  Map<String, String> makeMapParam(String command,String target,String status,String reason){
-        Map<String, String> map=makeMapParam(command, target, status);
+    public static  Map<String, Object> makeMapParam(String command,String target,String status,String reason){
+        Map<String, Object> map=makeMapParam(command, target, status);
         if(reason!=null)
             map.put("reason", reason);
         return map;

@@ -90,7 +90,7 @@ public class OfflineController {
                     PreyLogger.d("[" + i + "]id:" + dto.getOfflineId() + " correlationId:" + correlationId);
                     PreyLogger.d("[" + i + "]id:" + dto.getOfflineId() + " parameters:" + parameters);
                     PreyLogger.d("[" + i + "]id:" + dto.getOfflineId() + " files:" + files);
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, Object> params = new HashMap<String, Object>();
                     try {
                         if (dto.getParameters() != null) {
                             PreyLogger.d("[" + i + "]id:" + dto.getOfflineId() + " Parameters:" + dto.getParameters());

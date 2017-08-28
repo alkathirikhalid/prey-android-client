@@ -31,7 +31,7 @@ public class PreyEmail {
                 if (entityFiles != null && entityFiles.size() >= 0) {
                     String url = PreyWebServices.getInstance().getFileUrlJson(ctx);
                     PreyLogger.d("URL:" + url);
-                    Map<String, String> parameters = new HashMap<String, String>();
+                    Map<String, Object> parameters = new HashMap<String, Object>();
                     PreyConfig preyConfig = PreyConfig.getPreyConfig(ctx);
                     PreyHttpResponse preyHttpResponse = null;
                     preyHttpResponse = PreyRestHttpClient.getInstance(ctx).postAutentication(url, parameters, entityFiles);

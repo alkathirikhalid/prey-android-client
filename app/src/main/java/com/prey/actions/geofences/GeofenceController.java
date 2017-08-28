@@ -119,7 +119,7 @@ public class GeofenceController {
         }
     }
 
-    public void sendNotify(final Context ctx, final Map<String, String> params) {
+    public void sendNotify(final Context ctx, final Map<String, Object> params) {
         new Thread() {
             public void run() {
                 PreyWebServices.getInstance().sendNotifyActionResultPreyHttp(ctx, params);
