@@ -1,6 +1,28 @@
 <resources>
     <string name="app_name">Prey</string>
 
+    <string name="facebook_app_id">114352772569473</string>
+    <string name="fb_login_protocol_scheme">fb114352772569473</string>
+    <string name="label_facebook_login">Facebook Login</string>
+
+    <string name="server_client_id">300814254335-njv0gbjmv6e2dd3drpsvkc5p17nrutpv.apps.googleusercontent.com</string>
+    <string name="google_app_id">300814254335</string>
+
+    <!-- Button labels -->
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="refresh_token">Get Fresh Token</string>
+
+    <string name="loading">Loading…</string>
+
+    <!-- Sign-in status messages -->
+    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="signed_in">Signed in</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="signed_out">Signed out</string>
+    <string name="signed_in_err">"Error: please check logs."</string>
+
+
     <string name="menu_title_1">current device status</string>
     <string name="menu_title_2">NOT PROTECTED YET.</string>
     <string name="menu_title_3">WE ARE ALMOST THERE</string>

@@ -6,7 +6,6 @@
  ******************************************************************************/
 package com.prey.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -19,7 +18,9 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -28,6 +29,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.prey.PreyAccountData;
 import com.prey.PreyConfig;
 import com.prey.PreyLogger;
@@ -38,11 +59,20 @@ import com.prey.net.PreyWebServices;
 import com.prey.util.KeyboardStatusDetector;
 import com.prey.util.KeyboardVisibilityListener;
 
-public class SignUpActivity extends Activity {
+import org.json.JSONException;
+import org.json.JSONObject;
 
+public class SignUpActivity extends AppCompatActivity implements  GoogleApiClient.OnConnectionFailedListener{
+    private static final int RC_SIGN_IN = 9001;
     private static final int ERROR = 1;
     private String error = null;
     private String email = null;
+    private LoginButton loginButton;
+    private CallbackManager callbackManager;
+    private GoogleApiClient mGoogleApiClient;
+    private ProgressDialog mProgressDialog;
+    private TextView mStatusTextView;
+    private static final String GRAPH_PATH = "me/permissions";
 
     public void onResume() {
         PreyLogger.i("onResume of SignUpActivity");
@@ -55,6 +85,8 @@ public class SignUpActivity extends Activity {
         PreyLogger.i("onPause of SignUpActivity");
         super.onPause();
     }
+
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -69,13 +101,133 @@ public class SignUpActivity extends Activity {
         this.setContentView(R.layout.signup);
         PreyLogger.i("onCreate of SignUpActivity");
 
+        callbackManager = CallbackManager.Factory.create();
+
+
+        loginButton = (LoginButton) findViewById(R.id.button_social_facebook);
+        loginButton.setReadPermissions("email", "public_profile", "user_friends");
+
+
+        // [START configure_signin]
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // [END configure_signin]
+
+        // [START build_client]
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        // [END build_client]
+
+        // Callback registration
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+
+
+
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                PreyLogger.i( response.toString());
+                                try {
+                                    PreyLogger.i("__object:"+object.toString());
+                                    // Application code
+                                    String email = object.getString("email");
+
+                                    String name=object.getString("name");
+                                    PreyLogger.i("email:" + email);
+
+                                    Intent intent = new Intent(getApplicationContext(), SignUpActivity2.class);
+                                    intent.putExtra("signup_email", email);
+                                    intent.putExtra("signup_name", name);
+
+                                    startActivity(intent);
+                                    finish();
+
+                                    GraphRequest.Callback callback = new GraphRequest.Callback() {
+                                        @Override
+                                        public void onCompleted(GraphResponse response) {
+                                            try {
+
+                                                    LoginManager.getInstance().logOut();
+
+                                            } catch (Exception ex) { /* no op */ }
+                                        }
+                                    };
+                                    GraphRequest request = new GraphRequest(AccessToken.getCurrentAccessToken(),
+                                            GRAPH_PATH, new Bundle(), HttpMethod.DELETE, callback);
+                                    request.executeAsync();
+                                }catch(Exception e){
+
+                                }
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender,birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
+
+
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+
+                PreyLogger.i("onError:"+exception.getMessage());
+            }
+        });
+
+
         final EditText nameText=((EditText)findViewById(R.id.editTextName));
         final EditText emailText=((EditText)findViewById(R.id.editTextEmailAddress));
-        final EditText passwordText=((EditText)findViewById(R.id.editTextPassword));
+        //final EditText passwordText=((EditText)findViewById(R.id.editTextPassword));
         Button buttonSignup = (Button) findViewById(R.id.buttonSignup);
 
         final TextView linkSignup = (TextView) findViewById(R.id.linkSignup);
 
+        Button button_social_facebook=(Button) findViewById(R.id.button_social_facebook);
+        SignInButton signInButton=(SignInButton) findViewById(R.id.button_social_google);
+
+
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+
+               /* Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                                // [START_EXCLUDE]
+                                updateUI(false);
+                                // [END_EXCLUDE]
+                            }
+                        });
+
+
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity2.class);
+                startActivity(intent);
+                finish();  */
+            }
+        });
 
 
         Typeface magdacleanmonoRegular = Typeface.createFromAsset(getAssets(), "fonts/MagdaClean/magdacleanmono-regular.ttf");
@@ -93,7 +245,7 @@ public class SignUpActivity extends Activity {
 
         nameText.setTypeface(magdacleanmonoRegular);
         emailText.setTypeface(magdacleanmonoRegular);
-        passwordText.setTypeface(magdacleanmonoRegular);
+        //passwordText.setTypeface(magdacleanmonoRegular);
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -135,7 +287,15 @@ public class SignUpActivity extends Activity {
             public void onClick(View v) {
                 String name = nameText.getText().toString();
                 email = emailText.getText().toString();
-                String password = passwordText.getText().toString();
+
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity2.class);
+                intent.putExtra("signup_email", email);
+                intent.putExtra("signup_name", name);
+                startActivity(intent);
+                finish();
+
+
+               /* String password = passwordText.getText().toString();
                 Context ctx = getApplicationContext();
                 if (email == null || email.equals("") || password == null || password.equals("")) {
                     Toast.makeText(ctx, R.string.error_all_fields_are_required, Toast.LENGTH_LONG).show();
@@ -152,7 +312,7 @@ public class SignUpActivity extends Activity {
                                 new CreateAccount().execute(name, email, password);
                         }
                     }
-                }
+                }*/
 
             }
         });
@@ -169,6 +329,8 @@ public class SignUpActivity extends Activity {
         });
     }
 
+
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), InitActivity.class);
@@ -177,58 +339,41 @@ public class SignUpActivity extends Activity {
     }
 
 
-    private class CreateAccount extends AsyncTask<String, Void, Void> {
 
-        ProgressDialog progressDialog = null;
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog = new ProgressDialog(SignUpActivity.this);
-            progressDialog.setMessage(SignUpActivity.this.getText(R.string.creating_account_please_wait).toString());
-            progressDialog.setIndeterminate(true);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(String... data) {
-            try {
-                error = null;
-                PreyAccountData accountData = PreyWebServices.getInstance().registerNewAccount(getApplicationContext(), data[0], data[1], data[2], PreyUtils.getDeviceType(getApplication()));
-                PreyLogger.d("Response creating account: " + accountData.toString());
-                PreyConfig.getPreyConfig(getApplicationContext()).saveAccount(accountData);
-                PreyConfig.getPreyConfig(getApplicationContext()).registerC2dm();
-                PreyWebServices.getInstance().sendEvent(getApplication(),PreyConfig.ANDROID_SIGN_UP);
-            } catch (PreyException e) {
-                error = e.getMessage();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void unused) {
-            try {
-                progressDialog.dismiss();
-            } catch (Exception e) {
-            }
-            if (error == null) {
-                String message = getString(R.string.new_account_congratulations_text, email);
-                Bundle bundle = new Bundle();
-                bundle.putString("message", message);
-                Intent intent =null;
-                if (PreyConfig.getPreyConfig(SignUpActivity.this).isChromebook()) {
-                    intent = new Intent(SignUpActivity.this, WelcomeActivity.class);
-                    PreyConfig.getPreyConfig(SignUpActivity.this).setProtectReady(true);
-                }else {
-                    intent = new Intent(SignUpActivity.this, PermissionInformationActivity.class);
-                }
-                intent.putExtras(bundle);
-                startActivity(intent);
-                finish();
-            } else
-                showDialog(ERROR);
-        }
+    // [START signIn]
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+    // [END signIn]
+
+    // [START signOut]
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        updateUI(false);
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+    // [END signOut]
+
+    // [START revokeAccess]
+    private void revokeAccess() {
+        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        updateUI(false);
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+    // [END revokeAccess]
 
     @Override
     protected Dialog onCreateDialog(int id) {
@@ -244,4 +389,100 @@ public class SignUpActivity extends Activity {
         }
         return pass;
     }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+        // be available.
+        PreyLogger.i("onConnectionFailed:" + connectionResult);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
+
+
+    private void updateUI(boolean signedIn) {
+
+    }
+
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button_social_google:
+                signIn();
+                break;
+
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }else{
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+
+    }
+
+
+
+    // [START handleSignInResult]
+    private void handleSignInResult(GoogleSignInResult result) {
+        PreyLogger.i( "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            PreyLogger.i( acct.getDisplayName());
+            PreyLogger.i( acct.getEmail());
+            updateUI(true);
+
+            Intent intent = new Intent(getApplicationContext(), SignUpActivity2.class);
+            intent.putExtra("signup_email", acct.getEmail());
+            intent.putExtra("signup_name", acct.getDisplayName());
+            startActivity(intent);
+            finish();
+
+            Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            // [START_EXCLUDE]
+                            updateUI(false);
+                            // [END_EXCLUDE]
+                        }
+                    });
+
+        } else {
+            // Signed out, show unauthenticated UI.
+            updateUI(false);
+        }
+    }
+    // [END handleSignInResult]
 }

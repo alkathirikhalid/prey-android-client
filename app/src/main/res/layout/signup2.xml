@@ -42,40 +42,59 @@
 
 
 
-    <EditText
+    <TextView
         android:id="@+id/editTextName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-		android:inputType="text"
-        android:ems="10"
-         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:text="@string/signup_title"
+        android:textColor="#000000"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        android:fontFamily="Avenir Next LT Pro"
         android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+
+
         android:layout_above="@+id/editTextEmailAddress"
-        android:hint="@string/field_name_signup"
-        android:textColorHint="#9D9C96"
-        android:textColor="#000"
+
           />
 
 
 
-    <EditText
+    <TextView
         android:id="@+id/editTextEmailAddress"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
+        android:text="@string/signup_title"
+        android:textColor="#000000"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        android:fontFamily="Avenir Next LT Pro"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_above="@+id/editTextPassword"
+
+         />
+
+
+
+
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
         android:ems="10"
          android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
         android:layout_above="@+id/buttonSignup"
-        android:hint="@string/field_email_signup"
+        android:hint="@string/field_password_signup"
         android:textColorHint="#9D9C96"
         android:textColor="#000"
          />
-
-
-
 
     <Button
         android:id="@+id/buttonSignup"
@@ -89,7 +108,7 @@
         android:fontFamily="Avenir Next LT Pro"
 
 
-        android:layout_above="@+id/oSignup"
+        android:layout_above="@+id/linkSignup"
 
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
@@ -98,58 +117,8 @@
          />
 
 
-    <TextView
-        android:id="@+id/oSignup"
-
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="o"
 
 
-        android:textColor="#000"
-        android:textStyle="bold"
-
-        android:layout_above="@+id/button_social"
-
-        android:gravity="center"
-
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" />
-
-    <LinearLayout
-        android:id="@+id/button_social"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_above="@+id/linkSignup"
-        android:gravity="center"
-        android:weightSum="2"
-
-        >
-
-        <com.facebook.login.widget.LoginButton
-            xmlns:fb="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/button_social_facebook"
-            android:layout_width="0dp" android:layout_weight="1"
-
-            android:layout_height="40dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            fb:login_text="Sign in"
-              />
-
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/button_social_google"
-            android:layout_width="0dp" android:layout_weight="1"
-            android:layout_height="40dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-             />
-
-
-    </LinearLayout>
 
     <TextView
         android:id="@+id/linkSignup"
